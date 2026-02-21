@@ -1,0 +1,50 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swiftapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: swiftapp }
+  template:
+    metadata:
+      labels: { app: swiftapp }
+    spec:
+      containers:
+        - name: app
+          image: your-repo/swiftapp:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: JWT_SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: swiftapp-secrets
+                  key: jwtKey
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: swiftapp
+spec:
+  selector:
+    app: swiftapp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

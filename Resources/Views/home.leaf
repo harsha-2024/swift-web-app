@@ -1,0 +1,9 @@
+
+#extend("base"):
+#export("title"): Home #endexport
+#export("body"):
+<div class="container">
+  <h1>SwiftLargeWebApp</h1>
+  <p>Welcome. Visit <code>/api/v1/health</code>, WebSocket at <code>/ws/echo</code>, SSE at <code>/events/stream</code>.</p>
+</div>
+#endexport
